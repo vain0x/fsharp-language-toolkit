@@ -9,4 +9,9 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\fltk-lsp\FSharpLanguageToolKit.fsproj" />
+    <ProjectReference Include="..\fltk-lsp-servers\FSharpLanguageToolKit.LspServers.fsproj" />
+  </ItemGroup>
+
 </Project>
