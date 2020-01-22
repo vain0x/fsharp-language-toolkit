@@ -5,8 +5,7 @@ open FSharpLanguageToolKit.LspTypes
 
 type JsonRpcVersion = string
 
-// FIXME: Should accommodate strings or 2^31+ numbers.
-type MessageId = int
+type MessageId = NumberOrString
 
 type MessageMethod = string
 
@@ -28,8 +27,8 @@ type ResponseMessage<'TResult> =
     {
         Jsonrpc: JsonRpcVersion
 
-        // FIXME: Should accommodate strings.
-        Id: Nullable<int64>
+        // nullable
+        Id: MessageId
 
         Method: MessageMethod
 

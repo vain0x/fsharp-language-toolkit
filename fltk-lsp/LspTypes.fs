@@ -4,8 +4,13 @@ open System
 
 type DocumentUri = string
 
-/// FIXME: Use discriminated union
-type NumberOrString = string
+[<RequireQualifiedAccess>]
+type NumberOrString =
+    | Number
+        of floatValue:float
+
+    | String
+        of stringValue:string
 
 [<CLIMutable>]
 [<Struct>]
