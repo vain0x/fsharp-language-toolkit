@@ -18,7 +18,6 @@ type RequestMessage<'TParams> =
 
         Method: MessageMethod
 
-        /// nullable
         Params: 'TParams
     }
 
@@ -27,15 +26,13 @@ type ResponseMessage<'TResult> =
     {
         Jsonrpc: JsonRpcVersion
 
-        // nullable
-        Id: MessageId
+        Id: Option<MessageId>
 
         Method: MessageMethod
 
         Result: 'TResult
 
-        /// nullable
-        Error: ResponseError
+        Error: Option<ResponseError>
     }
 
 [<CLIMutable>]

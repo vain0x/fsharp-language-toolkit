@@ -50,19 +50,15 @@ type Diagnostic =
         Range: Range
         Severity: Nullable<DiagnosticSeverity>
 
-        /// nullable
-        Code: NumberOrString
+        Code: Option<NumberOrString>
 
-        /// nullable
-        Source: string
+        Source: Option<string>
 
         Message: string
 
-        /// nullable
-        Tags: DiagnosticTag[]
+        Tags: Option<DiagnosticTag[]>
 
-        /// nullable
-        RelatedInformation: DiagnosticRelatedInformation[]
+        RelatedInformation: Option<DiagnosticRelatedInformation[]>
     }
 
 [<RequireQualifiedAccess>]

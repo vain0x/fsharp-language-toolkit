@@ -39,6 +39,7 @@ module Deserialize =
 
         let resolvers =
             [|
+                FSharp.FSharpResolver.Instance
                 Resolvers.StandardResolver.CamelCase
             |]
 
