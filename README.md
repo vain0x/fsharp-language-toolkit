@@ -10,3 +10,9 @@ PRs are welcome.
 - [ ] LSP server implementation example
 - [ ] Debug adapter protocol (DAP) type definitions for serialize/deserialize
 - [ ] DAP server implementation example
+
+## Links
+
+- [JSON RPC specification](https://www.jsonrpc.org/specification)
+- [Language server protocol (LSP) specification](https://microsoft.github.io/language-server-protocol/specifications/specification-current/)
+- [Debug adapter protocol (DAP) specification](https://microsoft.github.io/debug-adapter-protocol/specification)
