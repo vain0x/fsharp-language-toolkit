@@ -9,10 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Utf8Json" Version="1.3.7" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\fltk-lsp\FSharpLanguageToolKit.fsproj" />
   </ItemGroup>
 

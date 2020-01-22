@@ -1,8 +1,12 @@
 ﻿module FSharpLanguageToolKit.LspServerExamples.Program
 
 open System
+open Utf8Json
 open FSharpLanguageToolKit.LspRequests
-open FSharpLanguageToolKit.LspServers.Deserialize
+
+module Deserialize =
+    let deserialize<'T> (json: string): 'T =
+        JsonSerializer.Deserialize<'T>(json, Resolvers.StandardResolver.CamelCase)
 
 [<EntryPoint>]
 let main _ =
@@ -16,7 +20,7 @@ let main _ =
         }
     """
 
-    let r: InitializeRequest = deserialize json
+    let r: InitializeRequest = Deserialize.deserialize json
     printfn "%A" r
 
     0
