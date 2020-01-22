@@ -1,8 +1,21 @@
-﻿// Learn more about F# at http://fsharp.org
+﻿module FSharpLanguageToolKit.LspServerExamples.Program
 
 open System
+open FSharpLanguageToolKit.LspRequests
+open FSharpLanguageToolKit.LspServers.Deserialize
 
 [<EntryPoint>]
-let main argv =
-    printfn "Hello World from F#!"
-    0 // return an integer exit code
+let main _ =
+    let json = """
+        {
+            "Id": 1,
+            "Params": {
+                "ProcessId": 1
+            }
+        }
+    """
+
+    let r: InitializeRequest = deserialize json
+    printfn "%A" r
+
+    0

@@ -1,5 +1,7 @@
 ﻿namespace FSharpLanguageToolKit.LspServers
 
-module Say =
-    let hello name =
-        printfn "Hello %s" name
+open Utf8Json
+
+module Deserialize =
+    let deserialize<'T> (json: string) =
+        JsonSerializer.Deserialize<'T>(json)
