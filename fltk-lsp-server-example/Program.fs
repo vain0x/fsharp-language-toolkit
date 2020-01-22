@@ -8,9 +8,10 @@ open FSharpLanguageToolKit.LspServers.Deserialize
 let main _ =
     let json = """
         {
-            "Id": 1,
-            "Params": {
-                "ProcessId": 1
+            "jsonrpc": "2.0",
+            "id": 1,
+            "params": {
+                "processId": 1
             }
         }
     """
