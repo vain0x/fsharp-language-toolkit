@@ -14,13 +14,14 @@ let main _ =
         {
             "jsonrpc": "2.0",
             "id": 1,
-            "params": {
-                "processId": 1
+            "error": {
+                "code": 1,
+                "data": ["hello", 1]
             }
         }
     """
 
-    let r: InitializeRequest = Deserialize.deserialize json
+    let r: InitializeResponse = Deserialize.deserialize json
     printfn "%A" r
 
     0
