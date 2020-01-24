@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Compile Include="LspTypes.fs" />
-    <Compile Include="LspRequests.fs" />
   </ItemGroup>
 
 </Project>

@@ -3,17 +3,6 @@ namespace rec FSharpLanguageToolKit.LspTypes
 open System
 open System.Collections.Generic
 
-// Notes:
-// - Records are marked as CLIMutable
-//   because of interoperability with C# serializers,
-//   e.g. JSON.NET, Utf8Json.
-// - Record fields are `camelCase`
-//   instead of `PascalCase` (default F# convention)
-//   to reduce requirements of serializers.
-// - Unions are defined as discriminated unions instead.
-
-type DocumentUri = string
-
 [<RequireQualifiedAccess>]
 type NumberOrString =
     | Number
@@ -21,6 +10,18 @@ type NumberOrString =
 
     | String
         of stringValue:string
+
+type JsonRpcVersion = string
+
+type MessageId = NumberOrString
+
+type MessageMethod = string
+
+[<CLIMutable>]
+type CancelParams =
+    {
+        id: NumberOrString
+    }
 
 type ProgressToken = NumberOrString
 
@@ -30,6 +31,8 @@ type ProgressParams<'T> =
         token: ProgressToken
         value: 'T
     }
+
+type DocumentUri = string
 
 [<CLIMutable>]
 type Position =
@@ -65,7 +68,7 @@ type LocationLink =
 type Diagnostic =
     {
         range: Range
-        severity: Nullable<DiagnosticSeverity>
+        severity: Option<DiagnosticSeverity>
         code: Option<NumberOrString>
         source: Option<string>
         message: string
@@ -197,12 +200,14 @@ type WorkspaceEditClientCapabilities =
         failureHandling: FailureHandlingKind
     }
 
+// FIXME: string?
 [<RequireQualifiedAccess>]
 type ResourceOperationKind =
     | Create
     | Rename
     | Delete
 
+// FIXME: string?
 [<RequireQualifiedAccess>]
 type FailureHandlingKind =
     | Abort
@@ -262,6 +267,7 @@ type TextDocumentRegistrationOptions =
         documentSelector: Option<DocumentSelector>
     }
 
+/// FIXME: string?
 type MarkupKind =
     | PlainText
     | Markdown
@@ -316,3 +322,160 @@ type PartialResultParams =
     {
         partialResultToken: Option<ProgressToken>
     }
+
+[<CLIMutable>]
+type RequestMessage<'TParams> =
+    {
+        jsonrpc: JsonRpcVersion
+        id: MessageId
+        method: MessageMethod
+        ``params``: 'TParams
+    }
+
+[<CLIMutable>]
+type ResponseMessage<'TResult, 'TErrorData> =
+    {
+        jsonrpc: JsonRpcVersion
+        id: Option<MessageId>
+        method: MessageMethod
+        result: 'TResult
+        error: Option<ResponseError<'TErrorData>>
+    }
+
+[<CLIMutable>]
+type ResponseError<'TErrorData> =
+    {
+        code: int
+        message: MessageMethod
+        data: 'TErrorData
+    }
+
+[<AbstractClass>]
+[<Sealed>]
+type ErrorCodes private() =
+    static member val ParseError = -32700
+    static member val InvalidRequest = -32600
+    static member val MethodNotFound = -32601
+    static member val InvalidParams = -32602
+    static member val InternalError = -32603
+    static member val ServerErrorStart = -32099
+    static member val ServerErrorEnd = -32000
+    static member val ServerNotInitialized = -32002
+    static member val UnknownErrorCode = -32001
+
+    static member val RequestCancelled = -32800
+    static member val ContentModified = -32801
+
+[<CLIMutable>]
+type NotificationMessage<'TParams> =
+    {
+        jsonrpc: JsonRpcVersion
+        method: MessageMethod
+        ``params``: 'TParams
+    }
+
+[<CLIMutable>]
+type ClientInfo =
+    {
+        name: string
+        version: Option<string>
+    }
+
+/// FIXME: string?
+type Trace =
+    | Off
+    | Messages
+    | Verbose
+
+// type TextDocumentClientCapabilities =
+//     {
+//         synchronization: Option<TextDocumentSyncClientCapabilities>
+//         completion: Option<CompletionClientCapabilities>
+//         hover: Option<HoverClientCapabilities>
+//         signatureHelp: Option<SignatureHelpClientCapabilities>
+//         declaration: Option<DeclarationClientCapabilities>
+//         definition: Option<DefinitionClientCapabilities>
+//         typeDefinition: Option<TypeDefinitionClientCapabilities>
+//         implementation: Option<ImplementationClientCapabilities>
+//         references: Option<ReferenceClientCapabilities>
+//         documentHighlight: Option<DocumentHighlightClientCapabilities>
+//         documentSymbol: Option<DocumentSymbolClientCapabilities>
+//         codeAction: Option<CodeActionClientCapabilities>
+//         codeLens: Option<CodeLensClientCapabilities>
+//         documentLink: Option<DocumentLinkClientCapabilities>
+//         colorProvider: Option<DocumentColorClientCapabilities>
+//         formatting: Option<DocumentFormattingClientCapabilities>
+//         rangeFormatting: Option<DocumentRangeFormattingClientCapabilities>
+//         onTypeFormatting: Option<DocumentOnTypeFormattingClientCapabilities>
+//         rename: Option<RenameClientCapabilities>
+//         publishDiagnostics: Option<PublishDiagnosticsClientCapabilities>
+//         foldingRange: Option<FoldingRangeClientCapabilities>
+//     }
+
+// type ClientWorkspaceCapabilities =
+//     {
+//         applyEdit: Option<boolean>
+//         workspaceEdit: Option<WorkspaceEditClientCapabilities>
+//         didChangeConfiguration: Option<DidChangeConfigurationClientCapabilities>
+//         didChangeWatchedFiles: Option<DidChangeWatchedFilesClientCapabilities>
+//         symbol: Option<WorkspaceSymbolClientCapabilities>
+//         executeCommand: Option<ExecuteCommandClientCapabilities>
+//     }
+
+// type ClientCapabilities<'TExperimental> =
+//     {
+//         workspace: Option<ClientWorkspaceCapabilities>
+//         textDocument: Option<TextDocumentClientCapabilities>
+//         experimental: 'TExperimental
+//     }
+
+[<CLIMutable>]
+type ServerInfo =
+    {
+        name: string
+        version: Option<string>
+    }
+
+[<CLIMutable>]
+type ExecuteCommandOptions =
+    {
+        commands: string[]
+    }
+
+// FIXME: ServerCapabilities
+
+[<CLIMutable>]
+type InitializeParams<'TOptions> =
+    {
+        processId: Option<float>
+        clientInfo: Option<ClientInfo>
+        rootPath: Option<string>
+        rootUri: Option<DocumentUri>
+        initializationOptions: 'TOptions
+        // capabilities: ClientCapabilities
+        trace: Option<Trace>
+        // workspaceFolders: Option<WorkspaceFolder[]>
+    }
+
+[<CLIMutable>]
+type InitializeResult =
+    {
+        // capabilities: Option<ServerCapabilities>
+        serverInfo: Option<ServerInfo>
+    }
+
+[<CLIMutable>]
+type InitializeError =
+    {
+        retry: Option<bool>
+    }
+with
+    static member unknownProtocolVersion = 1.0
+
+type InitializeRequest<'TOptions> =
+    RequestMessage<InitializeParams<'TOptions>>
+
+type InitializeResponse =
+    ResponseMessage<InitializeResult, InitializeError>
+
+// next: https://microsoft.github.io/language-server-protocol/specifications/specification-current/#initialized
