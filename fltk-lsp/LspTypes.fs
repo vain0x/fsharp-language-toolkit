@@ -22,6 +22,15 @@ type NumberOrString =
     | String
         of stringValue:string
 
+type ProgressToken = NumberOrString
+
+[<CLIMutable>]
+type ProgressParams<'T> =
+    {
+        token: ProgressToken
+        value: 'T
+    }
+
 [<CLIMutable>]
 type Position =
     {
@@ -247,8 +256,7 @@ type StaticRegistrationOptions =
         id: Option<string>
     }
 
-// CLIMutable:
-
+[<CLIMutable>]
 type TextDocumentRegistrationOptions =
     {
         documentSelector: Option<DocumentSelector>
@@ -258,12 +266,14 @@ type MarkupKind =
     | PlainText
     | Markdown
 
+[<CLIMutable>]
 type MarkupContent =
     {
         kind: MarkupKind
         value: string
     }
 
+[<CLIMutable>]
 type WorkDoneProgressBegin =
     {
         kind: string
@@ -273,5 +283,36 @@ type WorkDoneProgressBegin =
         percentage: Option<float>
     }
 
-// next: WorkDoneProgressReport
-// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workDoneProgressReport
+[<CLIMutable>]
+type WorkDoneProgressReport =
+    {
+        kind: string
+        cancellable: Option<bool>
+        message: Option<string>
+        percentage: Option<float>
+    }
+
+[<CLIMutable>]
+type WorkDoneProgressEnd =
+    {
+        kind: string
+        message: Option<string>
+    }
+
+[<CLIMutable>]
+type WorkDoneProgressParams =
+    {
+        workDoneToken: Option<ProgressToken>
+    }
+
+[<CLIMutable>]
+type WorkDoneProgressOptions =
+    {
+        workDoneProgress: Option<bool>
+    }
+
+[<CLIMutable>]
+type PartialResultParams =
+    {
+        partialResultToken: Option<ProgressToken>
+    }
