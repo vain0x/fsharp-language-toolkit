@@ -1,14 +1,19 @@
 namespace rec FSharpLanguageToolKit.LspTypes
 
 open System
+open System.Collections.Generic
 
-// FIXME: JsonValue?
-type Any = obj
+// Notes:
+// - Records are marked as CLIMutable
+//   because of interoperability with C# serializers,
+//   e.g. JSON.NET, Utf8Json.
+// - Record fields are `camelCase`
+//   instead of `PascalCase` (default F# convention)
+//   to reduce requirements of serializers.
+// - Unions are defined as discriminated unions instead.
 
 type DocumentUri = string
 
-// NOTE: Not marked as struct because struct unions can't be deserialized
-//       with Utf8Json (as far as I know).
 [<RequireQualifiedAccess>]
 type NumberOrString =
     | Number
@@ -18,47 +23,45 @@ type NumberOrString =
         of stringValue:string
 
 [<CLIMutable>]
-[<Struct>]
 type Position =
     {
-        Line: int
-        Character: int
+        line: float
+        character: float
     }
 
 [<CLIMutable>]
-[<Struct>]
 type Range =
     {
-        Start: Position
-        End: Position
+        start: Position
+        ``end``: Position
     }
 
 [<CLIMutable>]
 type Location =
     {
-        Uri: DocumentUri
-        Range: Range
+        uri: DocumentUri
+        range: Range
     }
 
 [<CLIMutable>]
 type LocationLink =
     {
-        OriginSelectionRange: Nullable<Range>
-        TargetUri: DocumentUri
-        TargetRange: Range
-        TargetSelectionRange: Range
+        originSelectionRange: Option<Range>
+        targetUri: DocumentUri
+        targetRange: Range
+        targetSelectionRange: Range
     }
 
 [<CLIMutable>]
 type Diagnostic =
     {
-        Range: Range
-        Severity: Nullable<DiagnosticSeverity>
-        Code: Option<NumberOrString>
-        Source: Option<string>
-        Message: string
-        Tags: Option<DiagnosticTag[]>
-        RelatedInformation: Option<DiagnosticRelatedInformation[]>
+        range: Range
+        severity: Nullable<DiagnosticSeverity>
+        code: Option<NumberOrString>
+        source: Option<string>
+        message: string
+        tags: Option<DiagnosticTag[]>
+        relatedInformation: Option<DiagnosticRelatedInformation[]>
     }
 
 [<RequireQualifiedAccess>]
@@ -76,89 +79,199 @@ type DiagnosticTag =
 [<CLIMutable>]
 type DiagnosticRelatedInformation =
     {
-        Location: Location
-        Message: string
+        location: Location
+        message: string
     }
 
 [<CLIMutable>]
 type Command<'TArguments> =
     {
-        Title: string
-        Command: string
-        Arguments: Option<'TArguments>
+        title: string
+        command: string
+        arguments: Option<'TArguments>
     }
 
 [<CLIMutable>]
 type TextEdit =
     {
-        Range: Range
-        NewText: string
+        range: Range
+        newText: string
     }
 
 [<CLIMutable>]
 type TextDocumentEdit =
     {
-        TextDocument: VersionedTextDocumentIdentifier
-        Edits: TextEdit[]
+        textDocument: VersionedTextDocumentIdentifier
+        edits: TextEdit[]
     }
 
 [<CLIMutable>]
 type CreateFileOptions =
     {
-        Overwrite: Option<bool>
-        IgnoreIfExists: Option<bool>
+        overwrite: Option<bool>
+        ignoreIfExists: Option<bool>
     }
 
 [<CLIMutable>]
 type CreateFile =
     {
-        Kind: string
-        Uri: DocumentUri
-        Options: Option<CreateFileOptions>
+        kind: string
+        uri: DocumentUri
+        options: Option<CreateFileOptions>
     }
 
 [<CLIMutable>]
 type RenameFileOptions =
     {
-        Kind: string
-        OldUri: DocumentUri
-        NewUri: DocumentUri
-        Options: Option<RenameFileOptions>
+        overwrite: Option<bool>
+        ignoreIfExists: Option<bool>
+    }
+
+[<CLIMutable>]
+type RenameFile =
+    {
+        kind: string
+        oldUri: DocumentUri
+        newUri: DocumentUri
+        options: Option<RenameFileOptions>
     }
 
 [<CLIMutable>]
 type DeleteFileOptions =
     {
-        Recursive: Option<bool>
-        IgnoreIfNotExists: Option<bool>
+        recursive: Option<bool>
+        ignoreIfNotExists: Option<bool>
     }
 
 [<CLIMutable>]
 type DeleteFile =
     {
-        Kind: string
-        Uri: DocumentUri
-        Options: Option<DeleteFileOptions>
+        kind: string
+        uri: DocumentUri
+        options: Option<DeleteFileOptions>
     }
 
-// next: WorkspaceEdit
+[<RequireQualifiedAccess>]
+type FileEdit =
+    | Text
+        of TextDocumentEdit
 
+    | Create
+        of CreateFile
 
+    | Rename
+        of RenameFile
 
+    | Delete
+        of DeleteFile
 
+[<RequireQualifiedAccess>]
+type DocumentChange =
+    | Documents
+        of TextDocumentEdit[]
 
-
+    | Files
+        of FileEdit[]
 
 [<CLIMutable>]
-[<Struct>]
-type TextDocumentIdentifier =
+type WorkspaceEdit =
     {
-        Uri: DocumentUri
+        changes: Option<Dictionary<DocumentUri, TextEdit[]>>
+        documentChanges: Option<TextDocumentEdit[]>
     }
 
-[<Struct>]
+[<CLIMutable>]
+type WorkspaceEditClientCapabilities =
+    {
+        documentChanges: Option<bool>
+        resourceOperations: Option<ResourceOperationKind[]>
+        failureHandling: FailureHandlingKind
+    }
+
+[<RequireQualifiedAccess>]
+type ResourceOperationKind =
+    | Create
+    | Rename
+    | Delete
+
+[<RequireQualifiedAccess>]
+type FailureHandlingKind =
+    | Abort
+    | Transactional
+    | Undo
+    | TextOnlyTransaction
+
+[<CLIMutable>]
+type TextDocumentIdentifier =
+    {
+        uri: DocumentUri
+    }
+
+[<CLIMutable>]
+type TextDocumentItem =
+    {
+        uri: DocumentUri
+        languageId: string
+        version: float
+        text: string
+    }
+
+[<CLIMutable>]
 type VersionedTextDocumentIdentifier =
     {
-        Uri: DocumentUri
-        Version: Option<int>
+        uri: DocumentUri
+        version: Option<int>
     }
+
+[<CLIMutable>]
+type TextDocumentPositionParams =
+    {
+        textDocument: TextDocumentIdentifier
+        position: Position
+    }
+
+[<CLIMutable>]
+type DocumentFilter =
+    {
+        language: Option<string>
+        scheme: Option<string>
+        pattern: Option<string>
+    }
+
+type DocumentSelector =
+    DocumentFilter[]
+
+[<CLIMutable>]
+type StaticRegistrationOptions =
+    {
+        id: Option<string>
+    }
+
+// CLIMutable:
+
+type TextDocumentRegistrationOptions =
+    {
+        documentSelector: Option<DocumentSelector>
+    }
+
+type MarkupKind =
+    | PlainText
+    | Markdown
+
+type MarkupContent =
+    {
+        kind: MarkupKind
+        value: string
+    }
+
+type WorkDoneProgressBegin =
+    {
+        kind: string
+        title: string
+        cancellable: Option<bool>
+        message: Option<string>
+        percentage: Option<float>
+    }
+
+// next: WorkDoneProgressReport
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workDoneProgressReport
