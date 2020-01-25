@@ -4,6 +4,14 @@ open System
 open System.Collections.Generic
 
 [<RequireQualifiedAccess>]
+type BooleanOrString =
+    | Boolean
+        of booleanValue:bool
+
+    | String
+        of stringValue:string
+
+[<RequireQualifiedAccess>]
 type NumberOrString =
     | Number
         of floatValue:float
@@ -478,4 +486,103 @@ type InitializeRequest<'TOptions> =
 type InitializeResponse =
     ResponseMessage<InitializeResult, InitializeError>
 
-// next: https://microsoft.github.io/language-server-protocol/specifications/specification-current/#initialized
+type InitializedParams() =
+    static member val Default = InitializedParams()
+
+type InitializedNotification =
+    NotificationMessage<InitializedParams>
+
+type ShutdownRequest =
+    RequestMessage<unit>
+
+type ShutdownResponse =
+    ResponseMessage<unit, unit>
+
+type ExitNotification =
+    NotificationMessage<unit>
+
+type MessageType =
+    | Error = 1
+    | Warning = 2
+    | Info = 3
+    | Log = 4
+
+[<CLIMutable>]
+type ShowMessageParams =
+    {
+        ``type``: float
+        message: string
+    }
+
+type ShowMessageNotification =
+    NotificationMessage<ShowMessageParams>
+
+[<CLIMutable>]
+type MessageActionItem =
+    {
+        title: string
+    }
+
+[<CLIMutable>]
+type ShowMessageRequestParams =
+    {
+        ``type``: float
+        message: string
+        actions: Option<MessageActionItem[]>
+    }
+
+type ShowMessageRequest =
+    RequestMessage<ShowMessageRequestParams>
+
+[<CLIMutable>]
+type LogMessageParams =
+    {
+        ``type``: float
+        message: string
+    }
+
+type LogMessageNotification =
+    NotificationMessage<LogMessageParams>
+
+[<CLIMutable>]
+type WorkDoneProgressCreateParams =
+    {
+        token: ProgressToken
+    }
+
+type WorkDoneProgressCreateRequest =
+    RequestMessage<WorkDoneProgressCreateParams>
+
+type WorkDoneProgressCreateResponse =
+    ResponseMessage<unit, unit>
+
+type TelemetryNotification<'TParams> =
+    NotificationMessage<'TParams>
+
+// FIXME: RegisterCapability
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#client_registerCapability
+
+// FIXME: WorkspaceFolder request
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_workspaceFolders
+
+[<CLIMutable>]
+type WorkspaceFoldersServerCapabilities =
+    {
+        supported: Option<bool>
+        changeNotifications: Option<BooleanOrString>
+    }
+
+[<CLIMutable>]
+type WorkspaceFolder =
+    {
+        uri: DocumentUri
+        name: string
+    }
+
+type WorkspaceFoldersRequest =
+    RequestMessage<unit>
+
+type WorkspaceFoldersResponse =
+    ResponseMessage<Option<WorkspaceFolder[]>, unit>
+
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_didChangeWorkspaceFolders
