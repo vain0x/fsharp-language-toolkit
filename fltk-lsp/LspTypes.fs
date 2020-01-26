@@ -585,4 +585,40 @@ type WorkspaceFoldersRequest =
 type WorkspaceFoldersResponse =
     ResponseMessage<Option<WorkspaceFolder[]>, unit>
 
-// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_didChangeWorkspaceFolders
+type WorkspaceFoldersChangeEvent =
+    {
+        added: WorkspaceFolder[]
+        removed: WorkspaceFolder[]
+    }
+
+type DidChangeWorkspaceFoldersParams =
+    {
+        event: WorkspaceFoldersChangeEvent
+    }
+
+type DidChangeWorkspaceFoldersNotification =
+    NotificationMessage<DidChangeWorkspaceFoldersParams>
+
+type DidChangeConfigurationClientCapabilities =
+    {
+        dynamicRegistration: Option<bool>
+    }
+
+type DidChangeConfigurationParams<'TSettings> =
+    {
+        settings: 'TSettings
+    }
+
+type DidChangeConfigurationNotification<'TSettings> =
+    NotificationMessage<DidChangeConfigurationParams<'TSettings>>
+
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_configuration
+
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_didChangeWatchedFiles
+
+type DidChangeWatchedFilesClientCapabilities =
+    {
+        dynamicRegistration: Option<bool>
+    }
+
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_symbol
