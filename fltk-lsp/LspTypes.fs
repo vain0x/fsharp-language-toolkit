@@ -444,12 +444,6 @@ type ServerInfo =
         version: Option<string>
     }
 
-[<CLIMutable>]
-type ExecuteCommandOptions =
-    {
-        commands: string[]
-    }
-
 // FIXME: ServerCapabilities
 
 [<CLIMutable>]
@@ -621,4 +615,245 @@ type DidChangeWatchedFilesClientCapabilities =
         dynamicRegistration: Option<bool>
     }
 
-// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_symbol
+type WorkspaceSymbolKind =
+    {
+        valueSet: Option<SymbolKind[]>
+    }
+
+type WorkspaceSymbolClientCapabilities =
+    {
+        dynamicRegistration: Option<bool>
+        symbolKind: Option<WorkspaceSymbolKind>
+    }
+
+type WorkspaceSymbolOptions = WorkDoneProgressOptions
+
+type WorkspaceSymbolRegistrationOptions = WorkspaceSymbolOptions
+
+[<RequireQualifiedAccess>]
+type BooleanOrWorkspaceSymbolOptions =
+    | Boolean
+        of bool
+
+    | Options
+        of WorkspaceSymbolOptions
+
+// FIXME: extends WorkDoneProgressParams, PartialResultParams
+type WorkspaceSymbolParams =
+    {
+        query: string
+    }
+
+type WorkspaceSymbolRequest =
+    RequestMessage<WorkspaceSymbolParams>
+
+type WorkspaceSymbolResponse =
+    ResponseMessage<Option<SymbolInformation[]>, unit>
+
+type ExecuteCommandClientCapabilities =
+    {
+        dynamicRegistration: Option<bool>
+    }
+
+// FIXME: extends WorkDoneProgressOptions
+type ExecuteCommandOptions =
+    {
+        commands: string[]
+    }
+
+type ExecuteCommandRegistrationOptions =
+    ExecuteCommandOptions
+
+// FIXME: extends WorkDoneProgressParams
+type ExecuteCommandParams<'TArguments> =
+    {
+        command: string
+        arguments: 'TArguments
+    }
+
+type ExecuteCommandRequest<'TArguments> =
+    RequestMessage<ExecuteCommandParams<'TArguments>>
+
+type ExecuteCommandResponse<'TResult> =
+    ResponseMessage<'TResult, unit>
+
+type ApplyWorkspaceEditParams =
+    {
+        label: Option<string>
+        edit: Option<WorkspaceEdit>
+    }
+
+type ApplyWorkspaceEditRequest =
+    RequestMessage<ApplyWorkspaceEditParams>
+
+/// NOTE: The actual name is `ApplyWorkspaceEditResponse` in the protocol.
+type ApplyWorkspaceEditResult =
+    {
+        applied: bool
+        failureReason: Option<string>
+    }
+
+type ApplyWorkspaceEditResponse =
+    ResponseMessage<ApplyWorkspaceEditResult, unit>
+
+type DidOpenTextDocumentParams =
+    {
+        textDocument: TextDocumentItem
+    }
+
+type DidOpenTextDocumentNotification =
+    NotificationMessage<DidOpenTextDocumentParams>
+
+/// FIXME: extends TextDocumentRegistrationOptions
+type TextDocumentChangeRegistrationOptions =
+    {
+        syncKind: TextDocumentSyncKind
+    }
+
+module TextDocumentContentChangeEvent =
+    type Part =
+        {
+            range: Range
+            rangeLength: Option<float>
+            text: string
+        }
+
+    type Full =
+        {
+            text: string
+        }
+
+[<RequireQualifiedAccess>]
+type TextDocumentContentChangeEvent =
+    | Part
+        of TextDocumentContentChangeEvent.Part
+
+    | Full
+        of TextDocumentContentChangeEvent.Full
+
+type DidChangeTextDocumentParams =
+    {
+        textDocument: VersionedTextDocumentIdentifier
+        contentChanges: TextDocumentContentChangeEvent[]
+    }
+
+type DidChangeTextDocumentNotification =
+    NotificationMessage<DidChangeTextDocumentParams>
+
+[<AbstractClass>]
+[<Sealed>]
+type TextDocumentSaveReason private() =
+    static member val Manual = 1
+    static member val AfterDelay = 2
+    static member val FocusOut = 3
+
+type WillSaveTextDocumentParams =
+    {
+        textDocument: TextDocumentIdentifier
+        reason: float
+    }
+
+type WillSaveWaitUntilTextDocumentRequest =
+    RequestMessage<WillSaveTextDocumentParams>
+
+type WillSaveWaitUntilTextDocumentResponse =
+    ResponseMessage<Option<TextEdit[]>, unit>
+
+type SaveOptions =
+    {
+        includeText: Option<bool>
+    }
+
+/// FIXME: extends TextDocumentRegistrationOptions
+type TextDocumentSaveRegistrationOptions =
+    {
+        includeText: Option<bool>
+    }
+
+type DidSaveTextDocumentParams =
+    {
+        textDocument: TextDocumentIdentifier
+        text: Option<string>
+    }
+
+type DidSaveTextDocumentNotification =
+    NotificationMessage<DidSaveTextDocumentParams>
+
+type DidCloseTextDocumentParams =
+    {
+        textDocument: TextDocumentIdentifier
+    }
+
+type TextDocumentSyncClientCapabilities =
+    {
+        dynamicRegistration: Option<bool>
+        willSave: Option<bool>
+        willSaveWaitUntil: Option<bool>
+        didSave: Option<bool>
+    }
+
+[<AbstractClass>]
+[<Sealed>]
+type TextDocumentSyncKind private() =
+    static member val None = 0
+    static member val Full = 1
+    static member val Incremental = 2
+
+type TextDocumentSyncOptions =
+    {
+        openClose: Option<bool>
+        change: Option<float>
+        willSave: Option<bool>
+        willSaveWaitUntil: Option<bool>
+        save: Option<SaveOptions>
+    }
+
+// next: https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_publishDiagnostics
+
+type SymbolKind =
+    | File = 1
+    | Module = 2
+    | Namespace = 3
+    | Package = 4
+    | Class = 5
+    | Method = 6
+    | Property = 7
+    | Field = 8
+    | Constructor = 9
+    | Enum = 10
+    | Interface = 11
+    | Function = 12
+    | Variable = 13
+    | Constant = 14
+    | String = 15
+    | Number = 16
+    | Boolean = 17
+    | Array = 18
+    | Object = 19
+    | Key = 20
+    | Null = 21
+    | EnumMember = 22
+    | Struct = 23
+    | Event = 24
+    | Operator = 25
+    | TypeParameter = 26
+
+type DocumentSymbol =
+    {
+        name: string
+        detail: Option<string>
+        kind: SymbolKind
+        deprecated: Option<bool>
+        range: Range
+        selectionRange: Range
+        children: Option<DocumentSymbol[]>
+    }
+
+type SymbolInformation =
+    {
+        name: string
+        kind: SymbolKind
+        deprecated: Option<bool>
+        location: Location
+        containerName: Option<string>
+    }
