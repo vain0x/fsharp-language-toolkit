@@ -1,0 +1,116 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "WorkDoneProgressBegin": {
+            "properties": {
+                "cancellable": {
+                    "description": "Controls if a cancel button should show to allow the user to cancel the\nlong running operation. Clients that don't support cancellation are allowed\nto ignore the setting.",
+                    "type": "boolean"
+                },
+                "kind": {
+                    "enum": [
+                        "begin"
+                    ],
+                    "type": "string"
+                },
+                "message": {
+                    "description": "Optional, more detailed associated progress message. Contains\ncomplementary information to the `title`.\n\nExamples: \"3/25 files\", \"project/src/module2\", \"node_modules/some_dep\".\nIf unset, the previous progress message (if any) is still valid.",
+                    "type": "string"
+                },
+                "percentage": {
+                    "description": "Optional progress percentage to display (value 100 is considered 100%).\nIf not provided infinite progress is assumed and clients are allowed\nto ignore the `percentage` value in subsequent in report notifications.\n\nThe value should be steadily rising. Clients are free to ignore values\nthat are not following this rule.",
+                    "type": "number"
+                },
+                "title": {
+                    "description": "Mandatory title of the progress operation. Used to briefly inform about\nthe kind of operation being performed.\n\nExamples: \"Indexing\" or \"Linking dependencies\".",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "WorkDoneProgressCancelNotification.HandlerSignature": {
+            "type": "object"
+        },
+        "WorkDoneProgressCancelParams": {
+            "properties": {
+                "token": {
+                    "description": "The token to be used to report progress.",
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "WorkDoneProgressClientCapabilities": {
+            "properties": {
+                "window": {
+                    "description": "Window specific client capabilities.",
+                    "properties": {
+                        "workDoneProgress": {
+                            "description": "Whether client supports handling progress notifications. If set servers are allowed to\nreport in `workDoneProgress` property in the request specific server capabilities.\n\nSince 3.15.0",
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "WorkDoneProgressCreateParams": {
+            "properties": {
+                "token": {
+                    "description": "The token to be used to report progress.",
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "WorkDoneProgressCreateRequest.HandlerSignature": {
+            "type": "object"
+        },
+        "WorkDoneProgressEnd": {
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "end"
+                    ],
+                    "type": "string"
+                },
+                "message": {
+                    "description": "Optional, a final message indicating to for example indicate the outcome\nof the operation.",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "WorkDoneProgressReport": {
+            "properties": {
+                "cancellable": {
+                    "description": "Controls enablement state of a cancel button. This property is only valid if a cancel\nbutton got requested in the `WorkDoneProgressStart` payload.\n\nClients that don't support cancellation or don't support control the button's\nenablement state are allowed to ignore the setting.",
+                    "type": "boolean"
+                },
+                "kind": {
+                    "enum": [
+                        "report"
+                    ],
+                    "type": "string"
+                },
+                "message": {
+                    "description": "Optional, more detailed associated progress message. Contains\ncomplementary information to the `title`.\n\nExamples: \"3/25 files\", \"project/src/module2\", \"node_modules/some_dep\".\nIf unset, the previous progress message (if any) is still valid.",
+                    "type": "string"
+                },
+                "percentage": {
+                    "description": "Optional progress percentage to display (value 100 is considered 100%).\nIf not provided infinite progress is assumed and clients are allowed\nto ignore the `percentage` value in subsequent in report notifications.\n\nThe value should be steadily rising. Clients are free to ignore values\nthat are not following this rule.",
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        }
+    }
+}
+

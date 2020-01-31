@@ -1,0 +1,177 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "FoldingRange": {
+            "description": "Represents a folding range.",
+            "properties": {
+                "endCharacter": {
+                    "description": "The zero-based character offset before the folded range ends. If not defined, defaults to the length of the end line.",
+                    "type": "number"
+                },
+                "endLine": {
+                    "description": "The zero-based line number where the folded range ends.",
+                    "type": "number"
+                },
+                "kind": {
+                    "description": "Describes the kind of the folding range such as `comment' or 'region'. The kind\nis used to categorize folding ranges and used by commands like 'Fold all comments'. See\n[FoldingRangeKind](#FoldingRangeKind) for an enumeration of standardized kinds.",
+                    "type": "string"
+                },
+                "startCharacter": {
+                    "description": "The zero-based character offset from where the folded range starts. If not defined, defaults to the length of the start line.",
+                    "type": "number"
+                },
+                "startLine": {
+                    "description": "The zero-based line number from where the folded range starts.",
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "FoldingRangeClientCapabilities": {
+            "properties": {
+                "dynamicRegistration": {
+                    "description": "Whether implementation supports dynamic registration for folding range providers. If this is set to `true`\nthe client supports the new `FoldingRangeRegistrationOptions` return value for the corresponding server\ncapability as well.",
+                    "type": "boolean"
+                },
+                "lineFoldingOnly": {
+                    "description": "If set, the client signals that it only supports folding complete lines. If set, client will\nignore specified `startCharacter` and `endCharacter` properties in a FoldingRange.",
+                    "type": "boolean"
+                },
+                "rangeLimit": {
+                    "description": "The maximum number of folding ranges that the client prefers to receive per document. The value serves as a\nhint, servers are free to follow the limit.",
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "FoldingRangeKind": {
+            "description": "Enum of known range kinds",
+            "enum": [
+                "comment",
+                "imports",
+                "region"
+            ],
+            "type": "string"
+        },
+        "FoldingRangeOptions": {
+            "properties": {
+                "workDoneProgress": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "FoldingRangeParams": {
+            "description": "Parameters for a [FoldingRangeRequest](#FoldingRangeRequest).",
+            "properties": {
+                "partialResultToken": {
+                    "description": "An optional token that a server can use to report partial results (e.g. streaming) to\nthe client.",
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                },
+                "textDocument": {
+                    "$ref": "#/definitions/TextDocumentIdentifier",
+                    "description": "The text document."
+                },
+                "workDoneToken": {
+                    "description": "An optional token that a server can use to report work done progress.",
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "FoldingRangeRegistrationOptions": {
+            "properties": {
+                "documentSelector": {
+                    "description": "A document selector to identify the scope of the registration. If set to null\nthe document selector provided on the client side will be used.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "properties": {
+                                    "language": {
+                                        "description": "A language id, like `typescript`.",
+                                        "type": "string"
+                                    },
+                                    "pattern": {
+                                        "description": "A glob pattern, like `*.{ts,js}`.",
+                                        "type": "string"
+                                    },
+                                    "scheme": {
+                                        "description": "A Uri [scheme](#Uri.scheme), like `file` or `untitled`.",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            {
+                                "properties": {
+                                    "language": {
+                                        "description": "A language id, like `typescript`.",
+                                        "type": "string"
+                                    },
+                                    "pattern": {
+                                        "description": "A glob pattern, like `*.{ts,js}`.",
+                                        "type": "string"
+                                    },
+                                    "scheme": {
+                                        "description": "A Uri [scheme](#Uri.scheme), like `file` or `untitled`.",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            {
+                                "properties": {
+                                    "language": {
+                                        "description": "A language id, like `typescript`.",
+                                        "type": "string"
+                                    },
+                                    "pattern": {
+                                        "description": "A glob pattern, like `*.{ts,js}`.",
+                                        "type": "string"
+                                    },
+                                    "scheme": {
+                                        "description": "A Uri [scheme](#Uri.scheme), like `file` or `untitled`.",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "id": {
+                    "description": "The id used to register the request. The id can be used to deregister\nthe request again. See also Registration#id.",
+                    "type": "string"
+                },
+                "workDoneProgress": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "FoldingRangeRequest.HandlerSignature": {
+            "type": "object"
+        },
+        "TextDocumentIdentifier": {
+            "description": "A literal to identify a text document in the client.\nThe TextDocumentIdentifier namespace provides helper functions to work with\n[TextDocumentIdentifier](#TextDocumentIdentifier) literals.",
+            "properties": {
+                "uri": {
+                    "description": "The text document's uri.",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    }
+}
+

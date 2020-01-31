@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ConfigurationClientCapabilities": {
+            "properties": {
+                "workspace": {
+                    "description": "The workspace client capabilities",
+                    "properties": {
+                        "configuration": {
+                            "description": "The client supports `workspace/configuration` requests.",
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "ConfigurationItem": {
+            "properties": {
+                "scopeUri": {
+                    "description": "The scope to get the configuration section for.",
+                    "type": "string"
+                },
+                "section": {
+                    "description": "The configuration section asked for.",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ConfigurationParams": {
+            "description": "The parameters of a configuration request.",
+            "properties": {
+                "items": {
+                    "items": {
+                        "$ref": "#/definitions/ConfigurationItem"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "ConfigurationRequest.HandlerSignature": {
+            "type": "object"
+        },
+        "ConfigurationRequest.MiddlewareSignature": {
+            "type": "object"
+        }
+    }
+}
+

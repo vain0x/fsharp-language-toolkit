@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -eux
+
+F=./node_modules/typescript-json-schema/bin/typescript-json-schema
+P=node_modules/vscode-languageserver-protocol
+
+$F $P/lib/protocol.d.ts '*' >lsp/index.json
+$F $P/lib/protocol.colorProvider.d.ts '*' >lsp/color-provider.json
+$F $P/lib/protocol.configuration.d.ts '*' >lsp/configuration.json
+$F $P/lib/protocol.declaration.d.ts '*' >lsp/declaration.json
+$F $P/lib/protocol.foldingRange.d.ts '*' >lsp/folding-range.json
+$F $P/lib/protocol.implementation.d.ts '*' >lsp/implementation.json
+$F $P/lib/protocol.progress.d.ts '*' >lsp/progress.json
+$F $P/lib/protocol.selectionRange.d.ts '*' >lsp/selection-range.json
+$F $P/lib/protocol.typeDefinition.d.ts '*' >lsp/type-definition.json
+$F $P/lib/protocol.workspaceFolders.d.ts '*' >lsp/workspace-folders.json

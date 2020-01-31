@@ -1,0 +1,115 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "DidChangeWorkspaceFoldersNotification.HandlerSignature": {
+            "type": "object"
+        },
+        "DidChangeWorkspaceFoldersNotification.MiddlewareSignature": {
+            "type": "object"
+        },
+        "DidChangeWorkspaceFoldersParams": {
+            "description": "The parameters of a `workspace/didChangeWorkspaceFolders` notification.",
+            "properties": {
+                "event": {
+                    "$ref": "#/definitions/WorkspaceFoldersChangeEvent",
+                    "description": "The actual workspace folder change event."
+                }
+            },
+            "type": "object"
+        },
+        "WorkspaceFolder": {
+            "properties": {
+                "name": {
+                    "description": "The name of the workspace folder. Used to refer to this\nworkspace folder in the user interface.",
+                    "type": "string"
+                },
+                "uri": {
+                    "description": "The associated URI for this workspace folder.",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "WorkspaceFoldersChangeEvent": {
+            "description": "The workspace folder change event.",
+            "properties": {
+                "added": {
+                    "description": "The array of added workspace folders",
+                    "items": {
+                        "$ref": "#/definitions/WorkspaceFolder"
+                    },
+                    "type": "array"
+                },
+                "removed": {
+                    "description": "The array of the removed workspace folders",
+                    "items": {
+                        "$ref": "#/definitions/WorkspaceFolder"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "WorkspaceFoldersClientCapabilities": {
+            "properties": {
+                "workspace": {
+                    "description": "The workspace client capabilities",
+                    "properties": {
+                        "workspaceFolders": {
+                            "description": "The client has support for workspace folders",
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "WorkspaceFoldersInitializeParams": {
+            "properties": {
+                "workspaceFolders": {
+                    "description": "The actual configured workspace folders.",
+                    "items": {
+                        "$ref": "#/definitions/WorkspaceFolder"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "WorkspaceFoldersRequest.HandlerSignature": {
+            "type": "object"
+        },
+        "WorkspaceFoldersRequest.MiddlewareSignature": {
+            "type": "object"
+        },
+        "WorkspaceFoldersServerCapabilities": {
+            "properties": {
+                "workspace": {
+                    "description": "The workspace server capabilities",
+                    "properties": {
+                        "workspaceFolders": {
+                            "properties": {
+                                "changeNotifications": {
+                                    "description": "Whether the server wants to receive workspace folder\nchange notifications.\n\nIf a strings is provided the string is treated as a ID\nunder which the notification is registed on the client\nside. The ID can be used to unregister for these events\nusing the `client/unregisterCapability` request.",
+                                    "type": [
+                                        "string",
+                                        "boolean"
+                                    ]
+                                },
+                                "supported": {
+                                    "description": "The Server has support for workspace folders",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        }
+    }
+}
+
